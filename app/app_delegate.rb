@@ -20,8 +20,8 @@ class AppDelegate
     @status_menu.addItem createMenuItem("Add Note", 'pressAddNote')
     @status_menu.addItem createMenuItem("Quit", 'terminate:')
 
-    @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
-    @window.center
+    center = DDHotKeyCenter.sharedHotKeyCenter
+    center.registerHotKeyWithKeyCode(KVK_ANSI_N, modifierFlags: NSControlKeyMask | NSAlternateKeyMask, target: self, action: 'toggleWindow:', object: nil)
   end
 
   def buildWindow
@@ -58,5 +58,10 @@ class AppDelegate
     @notes ||= 0
     @notes += 1
     @status_item.setTitle("Notes: #{@notes}")
+  end
+
+  def toggleWindow(event)
+    @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
+    @window.center
   end
 end

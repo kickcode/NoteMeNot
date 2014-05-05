@@ -12,4 +12,8 @@ Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
   app.name = 'NoteMeNot'
   app.info_plist['LSUIElement'] = true
+
+  app.frameworks += ["Carbon"]
+
+  app.vendor_project 'vendor/DDHotKey', :static, :cflags => "-fobjc-arc"
 end

@@ -1,0 +1,156 @@
+<?xml version='1.0'?>
+<signatures version='1.0'>
+<function name='DDCarbonModifierFlagsFromCocoaModifiers'>
+<arg declared_type='NSUInteger' name='flags' type='I' type64='Q'/>
+<retval declared_type='UInt32' type='L' type64='I'/>
+</function>
+<function name='DDStringFromKeyCode'>
+<arg declared_type='unsigned short' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' name='modifiers' type='I' type64='Q'/>
+<retval declared_type='NSString*' type='@'/>
+</function>
+<class name='DDHotKey'>
+<method selector='action'>
+<retval declared_type='SEL' type=':'/>
+</method>
+<method class_method='true' selector='hotKeyWithKeyCode:modifierFlags:task:'>
+<arg declared_type='unsigned short' index='0' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' index='1' name='flags' type='I' type64='Q'/>
+<arg declared_type='DDHotKeyTask' function_pointer='true' index='2' name='task' type='@?'>
+<arg declared_type='NSEvent*' type='@'/>
+<retval declared_type='void' type='v'/>
+</arg>
+<retval declared_type='id' type='@'/>
+</method>
+<method selector='keyCode'>
+<retval declared_type='unsigned short' type='S'/>
+</method>
+<method selector='modifierFlags'>
+<retval declared_type='NSUInteger' type='I' type64='Q'/>
+</method>
+<method selector='object'>
+<retval declared_type='id' type='@'/>
+</method>
+<method selector='setObject:'>
+<arg declared_type='id' index='0' name='object' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='target'>
+<retval declared_type='id' type='@'/>
+</method>
+<method selector='task'>
+<retval declared_type='DDHotKeyTask' function_pointer='true' type='@?'>
+<arg declared_type='NSEvent*' type='@'/>
+<retval declared_type='void' type='v'/>
+</retval>
+</method>
+</class>
+<class name='DDHotKeyAppDelegate'>
+<method selector='addOutput:'>
+<arg declared_type='NSString*' index='0' name='newOutput' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='output'>
+<retval declared_type='NSTextView*' type='@'/>
+</method>
+<method selector='registerExample1:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='registerExample2:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='registerExample3:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='setOutput:'>
+<arg declared_type='NSTextView*' index='0' name='output' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='setWindow:'>
+<arg declared_type='NSWindow*' index='0' name='window' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterExample1:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterExample2:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterExample3:'>
+<arg declared_type='id' index='0' name='sender' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='window'>
+<retval declared_type='NSWindow*' type='@'/>
+</method>
+</class>
+<class name='DDHotKeyCenter'>
+<method selector='hasRegisteredHotKeyWithKeyCode:modifierFlags:'>
+<arg declared_type='unsigned short' index='0' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' index='1' name='flags' type='I' type64='Q'/>
+<retval declared_type='BOOL' type='B'/>
+</method>
+<method selector='registerHotKey:'>
+<arg declared_type='DDHotKey*' index='0' name='hotKey' type='@'/>
+<retval declared_type='DDHotKey*' type='@'/>
+</method>
+<method selector='registerHotKeyWithKeyCode:modifierFlags:target:action:object:'>
+<arg declared_type='unsigned short' index='0' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' index='1' name='flags' type='I' type64='Q'/>
+<arg declared_type='id' index='2' name='target' type='@'/>
+<arg declared_type='SEL' index='3' name='action' type=':'/>
+<arg declared_type='id' index='4' name='object' type='@'/>
+<retval declared_type='DDHotKey*' type='@'/>
+</method>
+<method selector='registerHotKeyWithKeyCode:modifierFlags:task:'>
+<arg declared_type='unsigned short' index='0' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' index='1' name='flags' type='I' type64='Q'/>
+<arg declared_type='DDHotKeyTask' function_pointer='true' index='2' name='task' type='@?'>
+<arg declared_type='NSEvent*' type='@'/>
+<retval declared_type='void' type='v'/>
+</arg>
+<retval declared_type='DDHotKey*' type='@'/>
+</method>
+<method selector='registeredHotKeys'>
+<retval declared_type='NSSet*' type='@'/>
+</method>
+<method class_method='true' selector='sharedHotKeyCenter'>
+<retval declared_type='id' type='@'/>
+</method>
+<method selector='unregisterAllHotKeys'>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterHotKey:'>
+<arg declared_type='DDHotKey*' index='0' name='hotKey' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterHotKeyWithKeyCode:modifierFlags:'>
+<arg declared_type='unsigned short' index='0' name='keyCode' type='S'/>
+<arg declared_type='NSUInteger' index='1' name='flags' type='I' type64='Q'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterHotKeysWithTarget:'>
+<arg declared_type='id' index='0' name='target' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+<method selector='unregisterHotKeysWithTarget:action:'>
+<arg declared_type='id' index='0' name='target' type='@'/>
+<arg declared_type='SEL' index='1' name='action' type=':'/>
+<retval declared_type='void' type='v'/>
+</method>
+</class>
+<class name='DDHotKeyTextField'>
+<method selector='hotKey'>
+<retval declared_type='DDHotKey*' type='@'/>
+</method>
+<method selector='setHotKey:'>
+<arg declared_type='DDHotKey*' index='0' name='hotKey' type='@'/>
+<retval declared_type='void' type='v'/>
+</method>
+</class>
+</signatures>
