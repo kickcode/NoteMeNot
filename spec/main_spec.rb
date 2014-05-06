@@ -7,7 +7,7 @@ describe "Application 'NoteMeNot'" do
     @app.delegate.status_menu.nil?.should == false
   end
 
-  it "has three menu items" do
-    @app.delegate.status_menu.itemArray.length.should == 3
+  it "has two menu items" do
+    @app.delegate.status_menu.itemArray.length.should == 2
   end
 end

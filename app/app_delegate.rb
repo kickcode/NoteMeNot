@@ -17,11 +17,24 @@ class AppDelegate
     @status_item.setTitle(@app_name)
 
     @status_menu.addItem createMenuItem("About #{@app_name}", 'orderFrontStandardAboutPanel:')
-    @status_menu.addItem createMenuItem("Add Note", 'pressAddNote')
     @status_menu.addItem createMenuItem("Quit", 'terminate:')
 
     center = DDHotKeyCenter.sharedHotKeyCenter
     center.registerHotKeyWithKeyCode(KVK_ANSI_N, modifierFlags: NSControlKeyMask | NSAlternateKeyMask, target: self, action: 'toggleWindow:', object: nil)
+
+    @notes = []
+
+    @key_down_handler = Proc.new do |event|
+      if event.keyCode == KVK_Return
+        @notes << @text.stringValue
+        @text.stringValue = ""
+        @status_item.setTitle("Notes: #{@notes.length}")
+      else
+        result = event
+      end
+      result
+    end
+    NSEvent.addLocalMonitorForEventsMatchingMask(NSKeyDownMask, handler: @key_down_handler)
   end
 
   def buildWindow
@@ -52,12 +65,6 @@ class AppDelegate
 
   def createMenuItem(name, action)
     NSMenuItem.alloc.initWithTitle(name, action: action, keyEquivalent: '')
-  end
-
-  def pressAddNote
-    @notes ||= 0
-    @notes += 1
-    @status_item.setTitle("Notes: #{@notes}")
   end
 
   def toggleWindow(event)
