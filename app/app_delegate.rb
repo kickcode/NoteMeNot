@@ -26,9 +26,12 @@ class AppDelegate
 
     @key_down_handler = Proc.new do |event|
       if event.keyCode == KVK_Return
-        @notes << @text.stringValue
+        note = @text.stringValue
+        @notes << note
         @text.stringValue = ""
         @status_item.setTitle("Notes: #{@notes.length}")
+
+        @status_menu.addItem createMenuItem(note, 'pressNote:')
       else
         result = event
       end
@@ -70,5 +73,11 @@ class AppDelegate
   def toggleWindow(event)
     @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
     @window.center
+  end
+
+  def pressNote(item)
+    @notes.delete(item.title)
+    @status_menu.removeItem(item)
+    @status_item.setTitle("Notes: #{@notes.length}")
   end
 end
