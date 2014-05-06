@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bubble-wrap (1.6.0)
+      bubble-wrap-http (= 1.6.0)
+    bubble-wrap-http (1.6.0)
     motion-popup (1.1)
     rake (10.3.1)
 
@@ -8,5 +11,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bubble-wrap
   motion-popup
   rake

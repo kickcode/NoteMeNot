@@ -28,7 +28,7 @@ class AppDelegate
     center = DDHotKeyCenter.sharedHotKeyCenter
     center.registerHotKeyWithKeyCode(KVK_ANSI_N, modifierFlags: NSControlKeyMask | NSAlternateKeyMask, target: self, action: 'toggleWindow:', object: nil)
 
-    @notes = []
+    self.loadData
 
     @key_down_handler = Proc.new do |event|
       if event.keyCode == KVK_Return
@@ -145,12 +145,40 @@ class AppDelegate
   end
 
   def updateNotes
+    self.saveData
     @status_item.setTitle("Notes: #{@notes.length}")
     @collection_view.setContent(@notes.map(&:clone))
   end
 
   def editNote(note)
     self.toggleWindow(nil, note)
+  end
+
+  def applicationSupportDirectory
+    path = File.join(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, true).first, @app_name)
+    NSFileManager.defaultManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: nil)
+    path
+  end
+
+  def notesPath
+    File.join(self.applicationSupportDirectory, "notes.json")
+  end
+
+  def loadData
+    if File.exist?(self.notesPath)
+      @notes = BW::JSON.parse(File.read(self.notesPath)).map { |note| Note.new(note['id'], note['text']) }
+    else
+      @notes = []
+    end
+    self.updateNotes
+  end
+
+  def saveData
+    file = File.open(self.notesPath, "w")
+    file.write(BW::JSON.generate(@notes.map { |note| {'id' => note.id, 'text' => note.text} }))
+    file.flush
+    file.close
+    file = nil
   end
 end
 
