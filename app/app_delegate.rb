@@ -35,8 +35,6 @@ class AppDelegate
         @text.stringValue = ""
         @status_item.setTitle("Notes: #{@notes.length}")
         @collection_view.setContent(@notes)
-
-        @status_menu.addItem createMenuItem(note, 'pressNote:')
       else
         result = event
       end
@@ -95,12 +93,6 @@ class AppDelegate
   def toggleWindow(event)
     @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
     @window.center
-  end
-
-  def pressNote(item)
-    @notes.delete(item.title)
-    @status_menu.removeItem(item)
-    @status_item.setTitle("Notes: #{@notes.length}")
   end
 end
 
