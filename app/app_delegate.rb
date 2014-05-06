@@ -4,6 +4,8 @@ class AppDelegate
   POPUP_WIDTH = 300
   POPUP_HEIGHT = 300
 
+  Note = Struct.new(:id, :text)
+
   attr_accessor :status_menu
 
   def applicationDidFinishLaunching(notification)
@@ -30,11 +32,8 @@ class AppDelegate
 
     @key_down_handler = Proc.new do |event|
       if event.keyCode == KVK_Return
-        note = @text.stringValue
-        @notes << note
+        self.addNote(@text.stringValue)
         @text.stringValue = ""
-        @status_item.setTitle("Notes: #{@notes.length}")
-        @collection_view.setContent(@notes)
       else
         result = event
       end
@@ -94,6 +93,12 @@ class AppDelegate
     @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
     @window.center
   end
+
+  def addNote(text)
+    @notes << Note.new((@notes.map(&:id).sort.last || 0) + 1, text)
+    @status_item.setTitle("Notes: #{@notes.length}")
+    @collection_view.setContent(@notes)
+  end
 end
 
 class NotesView < NSView
@@ -121,7 +126,7 @@ class NotesView < NSView
 
   def setViewObject(object)
     return if object.nil?
-    self.message.stringValue = object
+    self.message.stringValue = object.text
     @object = object
   end
 end
