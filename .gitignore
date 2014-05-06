@@ -2,3 +2,4 @@
 build
 build-MacOSX
 .repl_history
+.DS_Store
