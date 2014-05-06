@@ -32,7 +32,15 @@ class AppDelegate
 
     @key_down_handler = Proc.new do |event|
       if event.keyCode == KVK_Return
-        self.addNote(@text.stringValue)
+        if @selected_note
+          note = self.findNote(@selected_note.id)
+          note.text = @text.stringValue unless note.nil?
+          self.updateNotes
+          @selected_note = nil
+        else
+          self.addNote(@text.stringValue)
+        end
+        self.updateEditPrompt
         @text.stringValue = ""
       else
         result = event
@@ -52,7 +60,6 @@ class AppDelegate
       @window.background.arrow_height)
 
     @box = NSBox.alloc.initWithFrame(@rect)
-    @box.setTitle("Enter note")
     @window.contentView.addSubview(@box)
 
     text_field_frame = NSInsetRect(@rect, 0, 12)
@@ -89,9 +96,25 @@ class AppDelegate
     NSMenuItem.alloc.initWithTitle(name, action: action, keyEquivalent: '')
   end
 
-  def toggleWindow(event)
+  def toggleWindow(event, note = nil)
+    @selected_note = note
+    self.updateEditPrompt
     @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
     @window.center
+  end
+
+  def updateEditPrompt
+    if @selected_note.nil?
+      @box.setTitle("Enter note")
+      @text.stringValue = ""
+    else
+      @box.setTitle("Editing note")
+      @text.stringValue = @selected_note.text
+    end
+  end
+
+  def findNote(id)
+    @notes.detect { |note| note.id == id }
   end
 
   def addNote(text)
@@ -100,13 +123,17 @@ class AppDelegate
   end
 
   def removeNote(button)
-    @notes.delete(@notes.detect { |note| note.id == button.tag })
+    @notes.delete(self.findNote(button.tag))
     self.updateNotes
   end
 
   def updateNotes
     @status_item.setTitle("Notes: #{@notes.length}")
-    @collection_view.setContent(@notes)
+    @collection_view.setContent(@notes.map(&:clone))
+  end
+
+  def editNote(note)
+    self.toggleWindow(nil, note)
   end
 end
 
@@ -151,6 +178,10 @@ class NotesView < NSView
     @remove.tag = object.id
     self.message.stringValue = object.text
     @object = object
+  end
+
+  def mouseDown(event)
+    NSApplication.sharedApplication.delegate.editNote(@object)
   end
 end
 
