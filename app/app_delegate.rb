@@ -96,6 +96,15 @@ class AppDelegate
 
   def addNote(text)
     @notes << Note.new((@notes.map(&:id).sort.last || 0) + 1, text)
+    self.updateNotes
+  end
+
+  def removeNote(button)
+    @notes.delete(@notes.detect { |note| note.id == button.tag })
+    self.updateNotes
+  end
+
+  def updateNotes
     @status_item.setTitle("Notes: #{@notes.length}")
     @collection_view.setContent(@notes)
   end
@@ -109,11 +118,24 @@ class NotesView < NSView
   def initWithFrame(rect)
     super(NSMakeRect(rect.origin.x, rect.origin.y, AppDelegate::POPUP_WIDTH, NOTE_HEIGHT))
 
-    @box = NSBox.alloc.initWithFrame(NSInsetRect(self.bounds, 5, 3))
+    remove_image = NSImage.imageNamed("remove.png")
+    @remove = NSButton.alloc.initWithFrame(NSMakeRect(AppDelegate::POPUP_WIDTH - remove_image.size.width - 5, (NOTE_HEIGHT / 2.0) - (remove_image.size.height / 2.0), remove_image.size.width, remove_image.size.height))
+    @remove.setImage(remove_image)
+    @remove.setImagePosition(NSImageOnly)
+    @remove.setBordered false
+    @remove.setFont NSFont.fontWithName("Arial", size: 30)
+    @remove.setTarget(NSApplication.sharedApplication.delegate)
+    @remove.setAction('removeNote:')
+    @remove.setToolTip("Remove this note")
+    self.addSubview(@remove)
+
+    box_frame = NSInsetRect(self.bounds, 5, 3)
+    box_frame.size.width = @remove.frame.origin.x - 5
+    @box = NSBox.alloc.initWithFrame(box_frame)
     @box.setTitle ""
     self.addSubview(@box)
 
-    @message = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, AppDelegate::POPUP_WIDTH, NOTE_HEIGHT - 30))
+    @message = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, @box.frame.size.width, NOTE_HEIGHT - 30))
     @message.drawsBackground = false
     @message.setEditable false
     @message.setSelectable false
@@ -126,6 +148,7 @@ class NotesView < NSView
 
   def setViewObject(object)
     return if object.nil?
+    @remove.tag = object.id
     self.message.stringValue = object.text
     @object = object
   end
