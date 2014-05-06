@@ -1,6 +1,8 @@
 class AppDelegate
   WINDOW_WIDTH = 500
   WINDOW_HEIGHT = 180
+  POPUP_WIDTH = 300
+  POPUP_HEIGHT = 300
 
   attr_accessor :status_menu
 
@@ -8,11 +10,13 @@ class AppDelegate
     @app_name = NSBundle.mainBundle.infoDictionary['CFBundleDisplayName']
 
     self.buildWindow
+    self.buildPopup
 
     @status_menu = NSMenu.new
 
     @status_item = NSStatusBar.systemStatusBar.statusItemWithLength(NSVariableStatusItemLength).init
-    @status_item.setMenu(@status_menu)
+    @status_item.setTarget(@popup)
+    @status_item.setAction('toggle')
     @status_item.setHighlightMode(true)
     @status_item.setTitle(@app_name)
 
@@ -30,6 +34,7 @@ class AppDelegate
         @notes << note
         @text.stringValue = ""
         @status_item.setTitle("Notes: #{@notes.length}")
+        @collection_view.setContent(@notes)
 
         @status_menu.addItem createMenuItem(note, 'pressNote:')
       else
@@ -66,6 +71,23 @@ class AppDelegate
     @box.addSubview(@text)
   end
 
+  def buildPopup
+    @popup = Motion::Popup::Panel.alloc.initPopup(POPUP_WIDTH, POPUP_HEIGHT)
+
+    @scroll_rect = NSInsetRect(@popup.contentView.frame, @popup.background.line_thickness / 2.0, @popup.background.arrow_height)
+
+    scroll_view = NSScrollView.alloc.initWithFrame(@scroll_rect)
+    scroll_view.hasVerticalScroller = true
+    @popup.contentView.addSubview(scroll_view)
+
+    @collection_view = NSCollectionView.alloc.initWithFrame(scroll_view.frame)
+    @collection_view.setItemPrototype(NotesPrototype.new)
+
+    scroll_view.documentView = @collection_view
+
+    @collection_view.setContent(@notes)
+  end
+
   def createMenuItem(name, action)
     NSMenuItem.alloc.initWithTitle(name, action: action, keyEquivalent: '')
   end
@@ -79,5 +101,46 @@ class AppDelegate
     @notes.delete(item.title)
     @status_menu.removeItem(item)
     @status_item.setTitle("Notes: #{@notes.length}")
+  end
+end
+
+class NotesView < NSView
+  NOTE_HEIGHT = 140
+
+  attr_accessor :box, :message
+
+  def initWithFrame(rect)
+    super(NSMakeRect(rect.origin.x, rect.origin.y, AppDelegate::POPUP_WIDTH, NOTE_HEIGHT))
+
+    @box = NSBox.alloc.initWithFrame(NSInsetRect(self.bounds, 5, 3))
+    @box.setTitle ""
+    self.addSubview(@box)
+
+    @message = NSTextField.alloc.initWithFrame(NSMakeRect(0, 0, AppDelegate::POPUP_WIDTH, NOTE_HEIGHT - 30))
+    @message.drawsBackground = false
+    @message.setEditable false
+    @message.setSelectable false
+    @message.setBezeled false
+    @message.setFont NSFont.fontWithName("Arial", size: 15)
+    @box.addSubview(@message)
+
+    self
+  end
+
+  def setViewObject(object)
+    return if object.nil?
+    self.message.stringValue = object
+    @object = object
+  end
+end
+
+class NotesPrototype < NSCollectionViewItem
+  def loadView
+    self.setView(NotesView.alloc.initWithFrame(NSZeroRect))
+  end
+
+  def setRepresentedObject(object)
+    super(object)
+    self.view.setViewObject(object)
   end
 end
