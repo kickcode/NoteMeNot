@@ -78,7 +78,20 @@ class AppDelegate
   def buildPopup
     @popup = Motion::Popup::Panel.alloc.initPopup(POPUP_WIDTH, POPUP_HEIGHT)
 
-    @scroll_rect = NSInsetRect(@popup.contentView.frame, @popup.background.line_thickness / 2.0, @popup.background.arrow_height)
+    menu_image = NSImage.imageNamed("menu.png")
+    @menu = NSButton.alloc.initWithFrame(NSMakeRect(AppDelegate::POPUP_WIDTH - menu_image.size.width - 5, 5, menu_image.size.width, menu_image.size.height))
+    @menu.setImage(menu_image)
+    @menu.setImagePosition(NSImageOnly)
+    @menu.setBordered false
+    @menu.setFont NSFont.fontWithName("Arial", size: 30)
+    @menu.setTarget(NSApplication.sharedApplication.delegate)
+    @menu.setAction('showMenu:')
+    @menu.setToolTip("Options")
+    @popup.contentView.addSubview(@menu)
+
+    @scroll_rect = NSInsetRect(@popup.contentView.frame, @popup.background.line_thickness / 2.0, @popup.background.arrow_height + (@menu.frame.size.height / 2.0))
+    @scroll_rect.size.height -= @menu.frame.size.height
+    @scroll_rect.origin.y += @menu.frame.size.height
 
     scroll_view = NSScrollView.alloc.initWithFrame(@scroll_rect)
     scroll_view.hasVerticalScroller = true
@@ -101,6 +114,10 @@ class AppDelegate
     self.updateEditPrompt
     @window.toggleWithFrame(CGRectMake(0, 0, 0, 0))
     @window.center
+  end
+
+  def showMenu(sender)
+    NSMenu.popUpContextMenu(@status_menu, withEvent: NSApp.currentEvent, forView: sender)
   end
 
   def updateEditPrompt
